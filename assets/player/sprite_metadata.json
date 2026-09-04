@@ -1,0 +1,26 @@
+{
+  "frame_width": 384,
+  "frame_height": 512,
+  "anchor_x": 192,
+  "anchor_y": 454,
+  "walk_frames": [
+    "walk_01.png",
+    "walk_02.png",
+    "walk_03.png",
+    "walk_04.png",
+    "walk_05.png",
+    "walk_06.png",
+    "walk_07.png",
+    "walk_08.png"
+  ],
+  "jump_frames": [
+    "jump_01.png",
+    "jump_02.png",
+    "jump_03.png",
+    "jump_04.png",
+    "jump_05.png",
+    "jump_06.png",
+    "jump_07.png"
+  ],
+  "jump_scale_factor_applied": 1.1067
+}
