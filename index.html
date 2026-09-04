@@ -192,7 +192,7 @@
 /* =====================================================================
    PERSONNALISATION — modifie ces lignes pour personnaliser le cadeau !
    ===================================================================== */
-const HER_NAME = "Juliette"; // ex: "Julie" — laisse vide pour rester générique
+const HER_NAME = "Bichette"; // ex: "Julie" — laisse vide pour rester générique
 const BIRTHDAY_MESSAGE = "Joyeux anniversaire mon amour ! 🎂🧡";
 const INTRO_MESSAGE = HER_NAME
   ? `Aide ${HER_NAME} à traverser les Causses de l'Aveyron : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'à la grotte du Roquefort où t'attend une surprise... 🥾🧀`
@@ -256,7 +256,8 @@ const LEVEL = buildLevel(2);
 const LEVEL_WIDTH = LEVEL.levelWidth;
 const platforms = LEVEL.ground.concat(LEVEL.floaters);
 const FINISH_X = LEVEL.caveX + 270;
-const CAVE_DRAW_X = LEVEL.caveX + 150;
+const CAVE_PLATFORM = LEVEL.ground[LEVEL.ground.length - 1];
+const CAVE_DRAW_X = CAVE_PLATFORM.x + CAVE_PLATFORM.w/2; // centré sur la plateforme finale
 
 // ---------- Déchets : 15 objets recyclables (+1 chacun, un seul de chaque) et objets non triables (-1) ----------
 const GOOD_ORDER = [
@@ -363,15 +364,30 @@ function preloadSprites(onDone){
   });
 }
 
-// Le bouton reste désactivé tant que les 15 sprites ne sont pas chargés
-// (évite tout flash / image manquante en jeu, cf. point d'ancrage §5)
+// ---------- Image de fin de niveau : le Buron (remplace la grotte dessinée) ----------
+const BURON_SRC = 'assets/player/background/buron_alligot_game_900px.png';
+const BURON_IMG = new Image();
+const BURON_DISPLAY_W = 400; // largeur d'affichage dans le jeu (image source 900x633)
+const BURON_DISPLAY_H = Math.round(BURON_DISPLAY_W * (633/900));
+let buronReady = false;
+
+// ---------- Chargement global (sprites + image du Buron) ----------
 const startBtn = document.getElementById('startBtn');
 startBtn.disabled = true;
-startBtn.textContent = 'Chargement des sprites...';
-preloadSprites(()=>{
-  startBtn.disabled = false;
-  startBtn.textContent = "Commencer l'aventure";
-});
+startBtn.textContent = 'Chargement...';
+
+function tryEnableStart(){
+  if(spritesReady && buronReady){
+    startBtn.disabled = false;
+    startBtn.textContent = "Commencer l'aventure";
+  }
+}
+
+BURON_IMG.onload = ()=>{ buronReady = true; tryEnableStart(); };
+BURON_IMG.onerror = ()=>{ console.warn('Image introuvable :', BURON_IMG.src); buronReady = true; tryEnableStart(); };
+BURON_IMG.src = BURON_SRC;
+
+preloadSprites(()=>{ tryEnableStart(); });
 
 // ---------- Input ----------
 const keys = {left:false, right:false, jump:false};
@@ -508,9 +524,8 @@ function update(){
   landOnPlatforms(player);
 
   if(player.y > H + 100){
-    player.x = player.lastSafe.x;
-    player.y = player.lastSafe.y;
-    player.vy = 0;
+    resetGame();
+    return; // le niveau repart de zéro, pas besoin de poursuivre cette frame
   }
 
   trash.forEach(t=>{
@@ -980,17 +995,13 @@ function drawPlayer(){
 
 
 function drawCave(){
-  const sx = CAVE_DRAW_X - cameraX;
-  if(sx < -150 || sx > W+150) return;
-  ctx.fillStyle = '#3A2E22';
-  ctx.beginPath();
-  ctx.moveTo(sx-70, 440);
-  ctx.quadraticCurveTo(sx, 300, sx+70, 440);
-  ctx.fill();
-  ctx.fillStyle = '#FBF6EA';
-  ctx.font = 'bold 13px Baloo 2, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('GROTTE DU ROQUEFORT', sx, 460);
+  if(!buronReady || !BURON_IMG.complete) return;
+  const groundY = 440; // surface de la plateforme finale
+  const embed = 22; // enfonce légèrement l'image dans la plateforme pour qu'elle s'y fonde
+  const sx = CAVE_DRAW_X - cameraX - BURON_DISPLAY_W/2;
+  const sy = groundY - BURON_DISPLAY_H + embed;
+  if(sx + BURON_DISPLAY_W < -50 || sx > W+50) return;
+  ctx.drawImage(BURON_IMG, sx, sy, BURON_DISPLAY_W, BURON_DISPLAY_H);
 }
 
 function drawPopups(){
