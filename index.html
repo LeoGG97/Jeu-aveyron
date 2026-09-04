@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Roquefort &amp; Recyclage</title>
+<title>Mission Aligot &amp; Recyclage</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap');
 
@@ -147,7 +147,7 @@
 
   <div id="startScreen" class="overlay">
     <div class="panel">
-      <h1>Mission Roquefort &amp; Recyclage</h1>
+      <h1>Mission Aligot &amp; Recyclage</h1>
       <p id="introText"></p>
       <div class="legend">
         ✅ <b>15 objets recyclables (+1 chacun)</b> : canette, conserve, bouteille d'eau, capsule, carton de céréales, polystyrène, pot de yaourt, enveloppe, magazine, tube de dentifrice, feuille de papier, carton de pizza, barquette alu, flacon de shampooing, carton d'emballage<br><br>
@@ -166,7 +166,7 @@
   <div id="winScreen" class="overlay hidden">
     <div class="panel">
       <h2 id="winTitle"></h2>
-      <p id="winText">Tu as terminé avec <span id="finalScore">0</span> points. Bravo, ma Juliette ! 🥾</p>
+      <p id="winText">Tu as terminé avec <span id="finalScore">0</span> points. Bravo, ma Juliette ! Le code secret est... 6-7 !!!</p>
       <button class="play" id="replayBtn">Rejouer</button>
     </div>
   </div>
@@ -174,7 +174,7 @@
   <div id="loseScreen" class="overlay hidden">
     <div class="panel">
       <h2 id="loseTitle" style="color:var(--teal);">Presque !</h2>
-      <p id="loseText">Il te manque quelques points pour entrer dans la grotte... Tu as fini avec <span id="loseScore">0</span>/15. Retente ta chance !</p>
+      <p id="loseText">Il te manque quelques points pour entrer dans le buron... Tu as fini avec <span id="loseScore">0</span>/15. Retente ta chance !</p>
       <button class="play" id="loseReplayBtn">Recommencer</button>
     </div>
   </div>
@@ -990,7 +990,7 @@ function drawCave(){
   ctx.fillStyle = '#FBF6EA';
   ctx.font = 'bold 13px Baloo 2, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('GROTTE DU ROQUEFORT', sx, 460);
+  ctx.fillText('GROTTE DU Aligot', sx, 460);
 }
 
 function drawPopups(){
