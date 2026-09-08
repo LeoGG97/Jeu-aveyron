@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Aligot &amp; Recyclage</title>
+<title>Mission Roquefort &amp; Recyclage</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap');
 
@@ -147,13 +147,13 @@
 
   <div id="startScreen" class="overlay">
     <div class="panel">
-      <h1>Mission Aligot &amp; Recyclage</h1>
+      <h1>Mission Roquefort &amp; Recyclage</h1>
       <p id="introText"></p>
       <div class="legend">
         ✅ <b>15 objets recyclables (+1 chacun)</b> : canette, conserve, bouteille d'eau, capsule, carton de céréales, polystyrène, pot de yaourt, enveloppe, magazine, tube de dentifrice, feuille de papier, carton de pizza, barquette alu, flacon de shampooing, carton d'emballage<br><br>
         ❌ <b>-1 point</b> : couche, coton-tige, litière de chat, verre cassé, protection hygiénique, cintre, brosse à dents, mouchoir
       </div>
-      <p class="goal">🎯 Trouve les 15 objets recyclables pour entrer dans le buron !</p>
+      <p class="goal">🎯 Trouve les 15 objets recyclables pour entrer dans la grotte !</p>
       <p class="tip">💡 Chaque objet n'apparaît qu'une fois : repère-les bien sur le chemin.</p>
       <div class="keys">
         <span class="key">⬅ ➡</span> bouger
@@ -166,7 +166,7 @@
   <div id="winScreen" class="overlay hidden">
     <div class="panel">
       <h2 id="winTitle"></h2>
-      <p id="winText">Tu as terminé avec <span id="finalScore">0</span> points. Bravo, ma Juliette ! Le code secret est... 6-7 !!!</p>
+      <p id="winText">Tu as terminé avec <span id="finalScore">0</span> points. Bravo, aventurière ! 🥾</p>
       <button class="play" id="replayBtn">Rejouer</button>
     </div>
   </div>
@@ -174,7 +174,7 @@
   <div id="loseScreen" class="overlay hidden">
     <div class="panel">
       <h2 id="loseTitle" style="color:var(--teal);">Presque !</h2>
-      <p id="loseText">Il te manque quelques points pour entrer dans le buron... Tu as fini avec <span id="loseScore">0</span>/15. Retente ta chance !</p>
+      <p id="loseText">Il te manque quelques points pour entrer dans la grotte... Tu as fini avec <span id="loseScore">0</span>/15. Retente ta chance !</p>
       <button class="play" id="loseReplayBtn">Recommencer</button>
     </div>
   </div>
@@ -192,11 +192,11 @@
 /* =====================================================================
    PERSONNALISATION — modifie ces lignes pour personnaliser le cadeau !
    ===================================================================== */
-const HER_NAME = "Juliette"; // 
-const BIRTHDAY_MESSAGE = "Joyeux anniversaire ma Juju ! 🎂🧡";
+const HER_NAME = "Bichette"; // ex: "Julie" — laisse vide pour rester générique
+const BIRTHDAY_MESSAGE = "Joyeux anniversaire mon amour ! 🎂🧡";
 const INTRO_MESSAGE = HER_NAME
-  ? `Aide ${HER_NAME} à traverser le plateau de l'Aveyron : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'au buron où t'attend une surprise... 🥾🧀`
-  : "Aide notre aventurière à traverser l'Aubrac : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'au buron t'attend une surprise... 🥾🧀";
+  ? `Aide ${HER_NAME} à traverser les Causses de l'Aveyron : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'à la grotte du Roquefort où t'attend une surprise... 🥾🧀`
+  : "Aide notre aventurière à traverser les Causses de l'Aveyron : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'à la grotte du Roquefort où t'attend une surprise... 🥾🧀";
 /* ===================================================================== */
 
 document.getElementById('winTitle').textContent = HER_NAME
@@ -256,7 +256,8 @@ const LEVEL = buildLevel(2);
 const LEVEL_WIDTH = LEVEL.levelWidth;
 const platforms = LEVEL.ground.concat(LEVEL.floaters);
 const FINISH_X = LEVEL.caveX + 270;
-const CAVE_DRAW_X = LEVEL.caveX + 150;
+const CAVE_PLATFORM = LEVEL.ground[LEVEL.ground.length - 1];
+const CAVE_DRAW_X = CAVE_PLATFORM.x + CAVE_PLATFORM.w/2; // centré sur la plateforme finale
 
 // ---------- Déchets : 15 objets recyclables (+1 chacun, un seul de chaque) et objets non triables (-1) ----------
 const GOOD_ORDER = [
@@ -363,15 +364,30 @@ function preloadSprites(onDone){
   });
 }
 
-// Le bouton reste désactivé tant que les 15 sprites ne sont pas chargés
-// (évite tout flash / image manquante en jeu, cf. point d'ancrage §5)
+// ---------- Image de fin de niveau : le Buron (remplace la grotte dessinée) ----------
+const BURON_SRC = 'assets/player/background/buron.png';
+const BURON_IMG = new Image();
+const BURON_DISPLAY_W = 294; // largeur d'affichage dans le jeu (420 - 30%), image source recadrée 1334x732
+const BURON_DISPLAY_H = Math.round(BURON_DISPLAY_W * (732/1334));
+let buronReady = false;
+
+// ---------- Chargement global (sprites + image du Buron) ----------
 const startBtn = document.getElementById('startBtn');
 startBtn.disabled = true;
-startBtn.textContent = 'Chargement des sprites...';
-preloadSprites(()=>{
-  startBtn.disabled = false;
-  startBtn.textContent = "Commencer l'aventure";
-});
+startBtn.textContent = 'Chargement...';
+
+function tryEnableStart(){
+  if(spritesReady && buronReady){
+    startBtn.disabled = false;
+    startBtn.textContent = "Commencer l'aventure";
+  }
+}
+
+BURON_IMG.onload = ()=>{ buronReady = true; tryEnableStart(); };
+BURON_IMG.onerror = ()=>{ console.warn('Image introuvable :', BURON_IMG.src); buronReady = true; tryEnableStart(); };
+BURON_IMG.src = BURON_SRC;
+
+preloadSprites(()=>{ tryEnableStart(); });
 
 // ---------- Input ----------
 const keys = {left:false, right:false, jump:false};
@@ -508,9 +524,8 @@ function update(){
   landOnPlatforms(player);
 
   if(player.y > H + 100){
-    player.x = player.lastSafe.x;
-    player.y = player.lastSafe.y;
-    player.vy = 0;
+    resetGame();
+    return; // le niveau repart de zéro, pas besoin de poursuivre cette frame
   }
 
   trash.forEach(t=>{
@@ -578,9 +593,6 @@ function drawBackground(){
     drawCloud(cx, 70+ (i%3)*35);
   }
 
-  drawViaduct(1500 - cameraX*0.35);
-  drawViaduct((LEVEL.caveX*0.55) - cameraX*0.35);
-
   ctx.fillStyle = '#A9C97A';
   drawHillLine(0.2, 340, 60);
   ctx.fillStyle = '#7FAE4D';
@@ -642,31 +654,6 @@ function drawHillLine(parallax, baseY, amp){
   ctx.lineTo(W,H);
   ctx.closePath();
   ctx.fill();
-}
-
-function drawViaduct(sx){
-  ctx.save();
-  ctx.globalAlpha = 0.5;
-  ctx.strokeStyle = '#3A4A52';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.moveTo(sx-260, 210);
-  ctx.lineTo(sx+260, 205);
-  ctx.stroke();
-  for(let i=-2;i<=2;i++){
-    const px = sx + i*100;
-    ctx.beginPath();
-    ctx.moveTo(px, 208);
-    ctx.lineTo(px, 100 - Math.abs(i)*8);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(px,208);
-    ctx.lineTo(px-40,260);
-    ctx.moveTo(px,208);
-    ctx.lineTo(px+40,260);
-    ctx.stroke();
-  }
-  ctx.restore();
 }
 
 function drawPlatform(p){
@@ -980,17 +967,13 @@ function drawPlayer(){
 
 
 function drawCave(){
-  const sx = CAVE_DRAW_X - cameraX;
-  if(sx < -150 || sx > W+150) return;
-  ctx.fillStyle = '#3A2E22';
-  ctx.beginPath();
-  ctx.moveTo(sx-70, 440);
-  ctx.quadraticCurveTo(sx, 300, sx+70, 440);
-  ctx.fill();
-  ctx.fillStyle = '#FBF6EA';
-  ctx.font = 'bold 13px Baloo 2, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('ALLIGOT', sx, 460);
+  if(!buronReady || !BURON_IMG.complete) return;
+  const groundY = 440; // surface de la plateforme finale
+  const embed = 4; // léger chevauchement pour éviter tout interstice au pixel près
+  const sx = CAVE_DRAW_X - cameraX - BURON_DISPLAY_W/2;
+  const sy = groundY - BURON_DISPLAY_H + embed;
+  if(sx + BURON_DISPLAY_W < -50 || sx > W+50) return;
+  ctx.drawImage(BURON_IMG, sx, sy, BURON_DISPLAY_W, BURON_DISPLAY_H);
 }
 
 function drawPopups(){
