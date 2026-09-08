@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Roquefort &amp; Recyclage</title>
+<title>Mission Alligot &amp; Recyclage</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap');
 
@@ -147,13 +147,13 @@
 
   <div id="startScreen" class="overlay">
     <div class="panel">
-      <h1>Mission Roquefort &amp; Recyclage</h1>
+      <h1>Mission Alligot &amp; Recyclage</h1>
       <p id="introText"></p>
       <div class="legend">
         ✅ <b>15 objets recyclables (+1 chacun)</b> : canette, conserve, bouteille d'eau, capsule, carton de céréales, polystyrène, pot de yaourt, enveloppe, magazine, tube de dentifrice, feuille de papier, carton de pizza, barquette alu, flacon de shampooing, carton d'emballage<br><br>
         ❌ <b>-1 point</b> : couche, coton-tige, litière de chat, verre cassé, protection hygiénique, cintre, brosse à dents, mouchoir
       </div>
-      <p class="goal">🎯 Trouve les 15 objets recyclables pour entrer dans la grotte !</p>
+      <p class="goal">🎯 Trouve les 15 objets recyclables pour entrer dans le buron !</p>
       <p class="tip">💡 Chaque objet n'apparaît qu'une fois : repère-les bien sur le chemin.</p>
       <div class="keys">
         <span class="key">⬅ ➡</span> bouger
@@ -174,7 +174,7 @@
   <div id="loseScreen" class="overlay hidden">
     <div class="panel">
       <h2 id="loseTitle" style="color:var(--teal);">Presque !</h2>
-      <p id="loseText">Il te manque quelques points pour entrer dans la grotte... Tu as fini avec <span id="loseScore">0</span>/15. Retente ta chance !</p>
+      <p id="loseText">Il te manque quelques points pour entrer dans le buron... Tu as fini avec <span id="loseScore">0</span>/15. Retente ta chance !</p>
       <button class="play" id="loseReplayBtn">Recommencer</button>
     </div>
   </div>
@@ -192,11 +192,11 @@
 /* =====================================================================
    PERSONNALISATION — modifie ces lignes pour personnaliser le cadeau !
    ===================================================================== */
-const HER_NAME = "Bichette"; // ex: "Julie" — laisse vide pour rester générique
-const BIRTHDAY_MESSAGE = "Joyeux anniversaire mon amour ! 🎂🧡";
+const HER_NAME = "Juliette"; 
+const BIRTHDAY_MESSAGE = "Joyeux anniversaire ma Juju ! 🎂🧡";
 const INTRO_MESSAGE = HER_NAME
-  ? `Aide ${HER_NAME} à traverser les Causses de l'Aveyron : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'à la grotte du Roquefort où t'attend une surprise... 🥾🧀`
-  : "Aide notre aventurière à traverser les Causses de l'Aveyron : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'à la grotte du Roquefort où t'attend une surprise... 🥾🧀";
+  ? `Aide ${HER_NAME} à traverser le plateau de l'Aubrac : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'au buron où t'attend une surprise... 🥾🧀`
+  : "Aide notre aventurière à traverser le plateau de l'Aubrac : ramasse les 15 déchets recyclables, évite ceux qui ne se trient pas, et grimpe jusqu'au buron où t'attend une surprise... 🥾🧀";
 /* ===================================================================== */
 
 document.getElementById('winTitle').textContent = HER_NAME
